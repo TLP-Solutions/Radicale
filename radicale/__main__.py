@@ -49,7 +49,7 @@ def export_storage(config, path, debug=False):
     from . import ical, pathutils, storage
     storage.load()
 
-    print("INFO: Exporting storage for Radicale 2.0.0 to %r" % path)
+    print(("INFO: Exporting storage for Radicale 2.0.0 to %r" % path))
 
     temp = tempfile.mkdtemp(prefix="Radicale.export.")
     try:
@@ -58,24 +58,24 @@ def export_storage(config, path, debug=False):
             remaining_collections = list(
                 ical.Collection.from_path("/", depth="0"))
         except Exception as e:
-            print("ERROR: Failed to find collection %r: %s" % ("/", e))
+            print(("ERROR: Failed to find collection %r: %s" % ("/", e)))
             if debug:
                 traceback.print_exc()
             exit(1)
         while remaining_collections:
             collection = remaining_collections.pop(0)
             if debug:
-                print("DEBUG: Exporting collection %r" %
-                      ("/" + collection.path))
+                print(("DEBUG: Exporting collection %r" %
+                      ("/" + collection.path)))
             try:
                 try:
                     filesystem_path = pathutils.path_to_filesystem(
                         collection.path,
                         os.path.join(temp, "root", "collection-root"))
                 except ValueError as e:
-                    print(
+                    print((
                         "WARNING: Skipping unsafe collection %r: %s" %
-                        ("/" + collection.path, e))
+                        ("/" + collection.path, e)))
                     if debug:
                         traceback.print_exc()
                     continue
@@ -83,8 +83,8 @@ def export_storage(config, path, debug=False):
                     remaining_collections.extend(collection.children(
                         collection.path))
                 except Exception as e:
-                    print("ERROR: Failed to find child collections of %r: %s" %
-                          ("/" + collection.path, e))
+                    print(("ERROR: Failed to find child collections of %r: %s" %
+                          ("/" + collection.path, e)))
                     if debug:
                         traceback.print_exc()
                     exit(1)
@@ -97,14 +97,14 @@ def export_storage(config, path, debug=False):
                             json.dump(props, f)
                 for component in collection.components:
                     if debug:
-                        print("DEBUG: Exporting component %r of collection %r"
-                              % (component.name, "/" + collection.path))
+                        print(("DEBUG: Exporting component %r of collection %r"
+                              % (component.name, "/" + collection.path)))
                     try:
                         if not pathutils.is_safe_filesystem_path_component(
                                 component.name):
-                            print("WARNING: Skipping unsafe item %r from "
+                            print(("WARNING: Skipping unsafe item %r from "
                                   "collection %r" %
-                                  (component.name, "/" + collection.path))
+                                  (component.name, "/" + collection.path)))
                             continue
                         items = [component]
                         if collection.resource_type == "calendar":
@@ -116,15 +116,15 @@ def export_storage(config, path, debug=False):
                         with open(component_filename, "wb") as f:
                             f.write(text.encode("utf-8"))
                     except Exception as e:
-                        print("ERROR: Failed to export component %r from "
+                        print(("ERROR: Failed to export component %r from "
                               "collection %r: %s" %
-                              (component.name, "/" + collection.path, e))
+                              (component.name, "/" + collection.path, e)))
                         if debug:
                             traceback.print_exc()
                         exit(1)
             except Exception as e:
-                print("ERROR: Failed to export collection %r: %s" %
-                      ("/" + collection.path, e))
+                print(("ERROR: Failed to export collection %r: %s" %
+                      ("/" + collection.path, e)))
                 if debug:
                     traceback.print_exc()
                 exit(1)
@@ -134,7 +134,7 @@ def export_storage(config, path, debug=False):
                 raise Exception("Destination path %r already exists" % path)
             shutil.move(os.path.join(temp, "root"), path)
         except Exception as e:
-            print("ERROR: Can't create %r directory: %s" % (path, e))
+            print(("ERROR: Can't create %r directory: %s" % (path, e)))
             if debug:
                 traceback.print_exc()
             exit(1)
@@ -201,8 +201,8 @@ def run():
         config.set("logging", "debug", "True" if options.debug else "False")
         log.start()
         if not configuration_found:
-            print("WARNING: Configuration file '%s' not found" %
-                  options.config)
+            print(("WARNING: Configuration file '%s' not found" %
+                  options.config))
         export_storage(config, options.export_storage, debug=options.debug)
         exit(0)
 

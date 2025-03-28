@@ -25,7 +25,7 @@ Authentication based on the ``python-ldap`` module
 
 """
 
-import ldap
+from . import ldap
 
 from .. import config, log
 

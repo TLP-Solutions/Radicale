@@ -159,7 +159,7 @@ class Collection(ical.Collection):
             db_header.collection_path = self.path
             self.session.add(db_header)
 
-        for item in self.items.values():
+        for item in list(self.items.values()):
             db_item = DBItem()
             db_item.name = item.name
             db_item.tag = item.tag
@@ -246,7 +246,7 @@ class Collection(ical.Collection):
         if old_properties != properties:
             for prop in db_properties:
                 self.session.delete(prop)
-            for name, value in properties.items():
+            for name, value in list(properties.items()):
                 prop = DBProperty(name=name, value=value or '',
                                   collection_path=self.path)
                 self.session.add(prop)

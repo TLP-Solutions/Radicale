@@ -101,7 +101,7 @@ class Collection(filesystem.Collection):
                     'Error while reading item %r: %r' % (path, e))
 
         return ical.serialize(
-            self.tag, self.headers, sorted(items.values(), key=lambda x: x.name))
+            self.tag, self.headers, sorted(list(items.values()), key=lambda x: x.name))
 
     @classmethod
     def is_node(cls, path):

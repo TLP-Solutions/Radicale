@@ -24,7 +24,7 @@ Authentication based on the ``pam-python`` module.
 """
 
 import grp
-import pam
+from . import pam
 import pwd
 
 from .. import config, log

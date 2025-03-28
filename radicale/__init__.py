@@ -42,9 +42,9 @@ try:
     from http import client
     from urllib.parse import unquote, urlparse
 except ImportError:
-    import httplib as client
-    from urllib import unquote
-    from urlparse import urlparse
+    import http.client as client
+    from urllib.parse import unquote
+    from urllib.parse import urlparse
 # pylint: enable=F0401,E0611
 
 from . import auth, config, ical, log, pathutils, rights, storage, xmlutils
@@ -471,7 +471,7 @@ class Application(object):
             collection.replace("", timezone)
             del props["C:calendar-timezone"]
         with collection.props as collection_props:
-            for key, value in props.items():
+            for key, value in list(props.items()):
                 collection_props[key] = value
             collection.write()
         return client.CREATED, {}, None
@@ -486,7 +486,7 @@ class Application(object):
 
         props = xmlutils.props_from_request(content)
         with collection.props as collection_props:
-            for key, value in props.items():
+            for key, value in list(props.items()):
                 collection_props[key] = value
         collection.write()
         return client.CREATED, {}, None

@@ -38,8 +38,8 @@ except ImportError:
 try:
     from urllib.parse import unquote, urlparse
 except ImportError:
-    from urllib import unquote
-    from urlparse import urlparse
+    from urllib.parse import unquote
+    from urllib.parse import urlparse
 # pylint: enable=F0401,E0611
 
 import re
@@ -60,7 +60,7 @@ NAMESPACES = {
 NAMESPACES_REV = {}
 
 
-for short, url in NAMESPACES.items():
+for short, url in list(NAMESPACES.items()):
     NAMESPACES_REV[url] = short
     if hasattr(ET, "register_namespace"):
         # Register namespaces cleanly with Python 2.7+ and 3.2+ ...
@@ -426,7 +426,7 @@ def proppatch(path, xml_request, collection):
     response.append(href)
 
     with collection.props as collection_props:
-        for short_name, value in props_to_set.items():
+        for short_name, value in list(props_to_set.items()):
             if short_name.split(":")[-1] == "calendar-timezone":
                 collection.replace(None, value)
             collection_props[short_name] = value

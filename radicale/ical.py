@@ -355,7 +355,7 @@ class Collection(object):
         """
         new_items = self._parse(
             text, (Timezone, Event, Todo, Journal, Card), name)
-        for new_item in new_items.values():
+        for new_item in list(new_items.values()):
             if new_item.name not in self.items:
                 self.items[new_item.name] = new_item
         self.write()
@@ -373,7 +373,7 @@ class Collection(object):
 
     def write(self):
         """Write collection with given parameters."""
-        text = serialize(self.tag, self.headers, self.items.values())
+        text = serialize(self.tag, self.headers, list(self.items.values()))
         self.save(text)
 
     def set_mimetype(self, mimetype):
@@ -468,13 +468,13 @@ class Collection(object):
     def timezones(self):
         """Get list of all timezones in collection."""
         return [
-            item for item in self.items.values() if item.tag == Timezone.tag]
+            item for item in list(self.items.values()) if item.tag == Timezone.tag]
 
     @property
     def components(self):
         """Get list of all components in collection."""
         tags = [item_type.tag for item_type in (Event, Todo, Journal, Card)]
-        return [item for item in self.items.values() if item.tag in tags]
+        return [item for item in list(self.items.values()) if item.tag in tags]
 
     @property
     def owner_url(self):

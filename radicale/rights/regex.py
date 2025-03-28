@@ -46,8 +46,8 @@ from .. import config, log
 
 # Manage Python2/3 different modules
 if sys.version_info[0] == 2:
-    from ConfigParser import ConfigParser
-    from StringIO import StringIO
+    from configparser import ConfigParser
+    from io import StringIO
 else:
     from configparser import ConfigParser
     from io import StringIO

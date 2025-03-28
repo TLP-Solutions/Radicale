@@ -32,7 +32,7 @@ import sys
 try:
     from configparser import RawConfigParser as ConfigParser
 except ImportError:
-    from ConfigParser import RawConfigParser as ConfigParser
+    from configparser import RawConfigParser as ConfigParser
 # pylint: enable=F0401
 
 
@@ -97,9 +97,9 @@ INITIAL_CONFIG = {
 # Create a ConfigParser and configure it
 _CONFIG_PARSER = ConfigParser()
 
-for section, values in INITIAL_CONFIG.items():
+for section, values in list(INITIAL_CONFIG.items()):
     _CONFIG_PARSER.add_section(section)
-    for key, value in values.items():
+    for key, value in list(values.items()):
         _CONFIG_PARSER.set(section, key, value)
 
 _CONFIG_PARSER.read("/etc/radicale/config")
