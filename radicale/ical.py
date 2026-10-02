@@ -430,8 +430,17 @@ class Collection(object):
     @property
     def name(self):
         """Collection name."""
+        # Oddelovac je "/", ne os.path.sep: ``path`` je logicka cesta
+        # kolekce ("admin/allcontacts"), ne cesta v souborovem systemu —
+        # viz __init__, kde se dela self.path.split("/").
+        #
+        # S os.path.sep vysel nazev na kazde platforme jinak: na Windows
+        # zpetne lomitko nic nerozdeli, takze zustalo cele
+        # "admin/allcontacts", kdezto na Linuxu zbylo "allcontacts".
+        # Projevilo se to az na alma uzlu v carddav testu test_sync_iphone
+        # (displayname kolekce).
         with self.props as props:
-            return props.get("D:displayname", self.path.split(os.path.sep)[-1])
+            return props.get("D:displayname", self.path.split("/")[-1])
 
     @property
     def color(self):
