@@ -430,17 +430,28 @@ class Collection(object):
     @property
     def name(self):
         """Collection name."""
-        # Oddelovac je "/", ne os.path.sep: ``path`` je logicka cesta
-        # kolekce ("admin/allcontacts"), ne cesta v souborovem systemu —
-        # viz __init__, kde se dela self.path.split("/").
+        # POZOR: ``os.path.sep`` tu NEMENIT na "/" bez domluvy.
         #
-        # S os.path.sep vysel nazev na kazde platforme jinak: na Windows
-        # zpetne lomitko nic nerozdeli, takze zustalo cele
-        # "admin/allcontacts", kdezto na Linuxu zbylo "allcontacts".
-        # Projevilo se to az na alma uzlu v carddav testu test_sync_iphone
-        # (displayname kolekce).
+        # ``path`` je "<vlastnik>/<kolekce>", tedy treba
+        # "admin/allcontacts". Na Windows zpetne lomitko nic nerozdeli,
+        # takze jako jmeno vyjde cela dvojice — a to je smysluplne,
+        # protoze kolekce patri konkretnimu uzivateli. Na Linuxu zbyde
+        # jen "allcontacts" a vlastnik z nazvu zmizi.
+        #
+        # Tahle hodnota jde jako ``D:displayname`` do PROPFIND odpovedi
+        # (xmlutils.py) a props soubory zadny vlastni displayname nemaji
+        # (carddav/storage.py, create_addressbook_props_file), takze se
+        # fallback uplatni VZDY. Produkce bezi na Windows, telefonum se
+        # adresare roky hlasi s vlastnikem — zmena je prejmenuje a
+        # nektere klienty donuti kolekci stahnout znovu nebo ji
+        # zduplikuji.
+        #
+        # Carddav test test_sync_iphone s tim rozdilem pocita. Az se to
+        # bude sjednocovat, patri k tomu zapsat vlastni ``D:displayname``
+        # do props (aby na fallbacku nic neviselo) a ohlasit uzivatelum,
+        # ze se jim adresar v telefonu prejmenuje.
         with self.props as props:
-            return props.get("D:displayname", self.path.split("/")[-1])
+            return props.get("D:displayname", self.path.split(os.path.sep)[-1])
 
     @property
     def color(self):
